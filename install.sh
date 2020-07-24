@@ -28,13 +28,13 @@ do_it() {
 
   BACKUP_DATE="$(date +%Y%m%d_%H%M%S)"
   mv -v "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json.${BACKUP_DATE}"
-  ln -fnsv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
+  rsync -ahv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
 
   read -p 'Do you want to install fonts? (y/N)' YN_FONTS
   if [ "${YN_FONTS}" = 'y' ]; then
     USER_FONTS_PATH="${USERPROFILE}/AppData/Local/Microsoft/Windows/Fonts"
     echo "Installing fonts to '${USER_FONTS_PATH}'..."
-    mv -v "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/*.ttf" "${USER_FONTS_PATH}"
+    rsync -ahv --include "*/" --include "*.ttf" --exclude "*" "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" "${USER_FONTS_PATH}"
   else
     echo 'The installation of fonts was skipped.'
   fi
