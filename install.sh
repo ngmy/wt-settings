@@ -27,8 +27,8 @@ do_it() {
   USERPROFILE="${USERPROFILE_MOUNT}${WIN_USERPROFILE_DIR//\\//}"
 
   BACKUP_DATE="$(date +%Y%m%d_%H%M%S)"
-  mv -v "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/settings.json.${BACKUP_DATE}"
-  ln -fnsv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/settings.json"
+  mv -v "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json.${BACKUP_DATE}"
+  ln -fnsv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json"
 
   read -p 'Do you want to install fonts? (y/N)' YN_FONTS
   if [ "${YN_FONTS}" = 'y' ]; then
