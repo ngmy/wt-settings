@@ -1,6 +1,7 @@
 #!/bin/bash
 
 WT_SETTINGS_PATH="$(realpath "${1:-"${HOME}/wt-settings"}")"
+WT_SETTINGS_FONTS_PATH="${WT_SETTINGS_PATH}/AppData/Local/Microsoft/Windows/Fonts"
 
 do_it() {
   if [ -d "${WT_SETTINGS_PATH}" ]; then
@@ -12,13 +13,12 @@ do_it() {
     fi
     echo "Downloading ngmy/wt-settings to '${WT_SETTINGS_PATH}'..."
     git -C "${WT_SETTINGS_PATH}" pull origin master
-    git -C "${WT_SETTINGS_PATH}" submodule update
   else
     echo "Downloading ngmy/wt-settings to '${WT_SETTINGS_PATH}'..."
     git clone https://github.com/ngmy/wt-settings.git "${WT_SETTINGS_PATH}"
-    git -C "${WT_SETTINGS_PATH}" submodule init
-    git -C "${WT_SETTINGS_PATH}" submodule update
   fi
+  echo "Downloading fonts to '${WT_SETTINGS_FONTS_PATH}'..."
+  git -C "${WT_SETTINGS_PATH}" submodule update --init
 
   WIN_USERPROFILE="$(cmd.exe /c "<nul set /p=%UserProfile%" 2>/dev/null)"
   WIN_USERPROFILE_DRIVE="${WIN_USERPROFILE%%:*}:\\"
@@ -33,11 +33,8 @@ do_it() {
   read -p 'Do you want to install fonts? (y/N)' YN_FONTS
   if [ "${YN_FONTS}" = 'y' ]; then
     USER_FONTS_PATH="${USERPROFILE}/AppData/Local/Microsoft/Windows/Fonts"
-    echo "Downloading fonts.."
-    git -C "${WT_SETTINGS_PATH}" submodule init
-    git -C "${WT_SETTINGS_PATH}" submodule update
     echo "Installing fonts to '${USER_FONTS_PATH}'..."
-    mv -v "${WT_SETTINGS_PATH}/fonts/RictyDiminished/*.ttf" "${USER_FONTS_PATH}"
+    mv -v "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/*.ttf" "${USER_FONTS_PATH}"
   else
     echo 'The installation of fonts was skipped.'
   fi
