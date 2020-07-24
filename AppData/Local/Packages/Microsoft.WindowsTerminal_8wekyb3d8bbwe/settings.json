@@ -8,7 +8,7 @@
 {
     "$schema": "https://aka.ms/terminal-profiles-schema",
 
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "defaultProfile": "{2c4de342-38b7-51cf-b940-2309a097f518}",
 
     // You can add more global application settings here.
     // To learn more about global settings, visit https://aka.ms/terminal-global-settings
@@ -28,6 +28,9 @@
         "defaults":
         {
             // Put settings here that you want to apply to all profiles.
+            "colorScheme": "Iceberg",
+            "fontFace": "Ricty Diminished",
+            "fontSize": 14
         },
         "list":
         [
@@ -49,7 +52,8 @@
                 "guid": "{2c4de342-38b7-51cf-b940-2309a097f518}",
                 "hidden": false,
                 "name": "Ubuntu",
-                "source": "Windows.Terminal.Wsl"
+                "source": "Windows.Terminal.Wsl",
+                "commandline": "wsl.exe ~ -d Ubuntu"
             },
             {
                 "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
@@ -62,7 +66,29 @@
 
     // Add custom color schemes to this array.
     // To learn more about color schemes, visit https://aka.ms/terminal-color-schemes
-    "schemes": [],
+    "schemes": [
+        {
+            "name": "Iceberg",
+            "foreground": "#c6c8d1",
+            "background": "#161821",
+            "black": "#161821",
+            "red": "#e27878",
+            "green": "#b4be82",
+            "yellow": "#e2a478",
+            "blue": "#84a0c6",
+            "purple": "#a093c7",
+            "cyan": "#89b8c2",
+            "white": "#c6c8d1",
+            "brightBlack": "#6b7089",
+            "brightRed": "#e98989",
+            "brightGreen": "#c0ca8e",
+            "brightYellow": "#e9b189",
+            "brightBlue": "#91acd1",
+            "brightPurple": "#ada0d3",
+            "brightCyan": "#95c4ce",
+            "brightWhite": "#d2d4de"
+        }
+    ],
 
     // Add custom keybindings to this array.
     // To unbind a key combination from your defaults.json, set the command to "unbound".
@@ -73,7 +99,7 @@
         // These two lines additionally bind them to Ctrl+C and Ctrl+V.
         // To learn more about selection, visit https://aka.ms/terminal-selection
         { "command": {"action": "copy", "singleLine": false }, "keys": "ctrl+c" },
-        { "command": "paste", "keys": "ctrl+v" },
+        { "command": "paste", "keys": "ctrl+shift+v" },
 
         // Press Ctrl+Shift+F to open the search box
         { "command": "find", "keys": "ctrl+shift+f" },
