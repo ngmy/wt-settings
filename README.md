@@ -1,1 +1,1 @@
-# wt-settings
+# ngmy's Windows Terminal Settings
