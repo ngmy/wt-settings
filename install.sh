@@ -1,11 +1,9 @@
 #!/bin/bash
 
-WT_SETTINGS_PATH="$(realpath "${1:-"${HOME}/wt-settings"}")"
-WT_SETTINGS_FONTS_PATH="${WT_SETTINGS_PATH}/AppData/Local/Microsoft/Windows/Fonts"
-
-do_it() {
+download() {
   if [ -d "${WT_SETTINGS_PATH}" ]; then
     echo "ngmy/wt-settings already exists in '${WT_SETTINGS_PATH}'."
+    local YN
     read -p 'Do you want to re-download ngmy/wt-settings and continue the installation? (y/N)' YN
     if [ "${YN}" != 'y' ]; then
       echo 'The installation was canceled.'
@@ -19,20 +17,22 @@ do_it() {
   fi
   echo "Downloading fonts to '${WT_SETTINGS_FONTS_PATH}'..."
   git -C "${WT_SETTINGS_PATH}" submodule update --init
+}
 
-  WIN_USERPROFILE="$(cmd.exe /c "<nul set /p=%UserProfile%" 2>/dev/null)"
-  WIN_USERPROFILE_DRIVE="${WIN_USERPROFILE%%:*}:\\"
-  USERPROFILE_MOUNT="$(findmnt --noheadings --first-only --output TARGET "${WIN_USERPROFILE_DRIVE}")"
-  WIN_USERPROFILE_DIR="${WIN_USERPROFILE#*:}"
-  USERPROFILE="${USERPROFILE_MOUNT}${WIN_USERPROFILE_DIR//\\//}"
+backup() {
+  local BACKUP_DATE="$(date +%Y%m%d_%H%M%S)"
+  mv -v "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json.${BACKUP_DATE}"
+}
 
-  BACKUP_DATE="$(date +%Y%m%d_%H%M%S)"
-  mv -v "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json.${BACKUP_DATE}"
-  rsync -ahv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USERPROFILE}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
+install() {
+  rsync -ahv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
+}
 
-  read -p 'Do you want to install fonts? (y/N)' YN_FONTS
-  if [ "${YN_FONTS}" = 'y' ]; then
-    USER_FONTS_PATH="${USERPROFILE}/AppData/Local/Microsoft/Windows/Fonts"
+install_fonts() {
+  local YN
+  read -p 'Do you want to install fonts? (y/N)' YN
+  if [ "${YN}" = 'y' ]; then
+    local USER_FONTS_PATH="${USER_PROFILE_PATH}/AppData/Local/Microsoft/Windows/Fonts"
     echo "Installing fonts to '${USER_FONTS_PATH}'..."
     rsync -ahv --include "*/" --include "*.ttf" --exclude "*" "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" "${USER_FONTS_PATH}"
   else
@@ -40,4 +40,20 @@ do_it() {
   fi
 }
 
-do_it
+main() {
+  local WT_SETTINGS_PATH="$(realpath "${1:-"${HOME}/wt-settings"}")"
+  local WT_SETTINGS_FONTS_PATH="${WT_SETTINGS_PATH}/AppData/Local/Microsoft/Windows/Fonts"
+
+  local WIN_USER_PROFILE_PATH="$(cmd.exe /c "<nul set /p=%UserProfile%" 2>/dev/null)"
+  local WIN_USER_PROFILE_DRIVE="${WIN_USER_PROFILE_PATH%%:*}:"
+  local USER_PROFILE_MOUNT_PATH="$(findmnt --noheadings --first-only --output TARGET "${WIN_USER_PROFILE_DRIVE}\\")"
+  local WIN_USER_PROFILE_PATH_WITHOUT_DRIVE="${WIN_USER_PROFILE_PATH#*:}"
+  local USER_PROFILE_PATH="${USER_PROFILE_MOUNT_PATH}${WIN_USER_PROFILE_PATH_WITHOUT_DRIVE//\\//}"
+
+  download
+  backup
+  install
+  install_fonts
+}
+
+main $1
