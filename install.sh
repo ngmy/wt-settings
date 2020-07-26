@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Ceuo pipefail
 
 download() {
   if [ -d "${WT_SETTINGS_PATH}" ]; then
