@@ -26,7 +26,7 @@ backup() {
 }
 
 install() {
-  rsync -ahv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
+  rsync -hv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
 }
 
 install_fonts() {
@@ -35,7 +35,7 @@ install_fonts() {
   if [ "${YN}" = 'y' ]; then
     local USER_FONTS_PATH="${USER_PROFILE_PATH}/AppData/Local/Microsoft/Windows/Fonts"
     echo "Installing fonts to '${USER_FONTS_PATH}'..."
-    rsync -ahv --include "*/" --include "*.ttf" --exclude "*" "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" "${USER_FONTS_PATH}"
+    rsync -hv --include "*/" --include "*.ttf" --exclude "*" "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" "${USER_FONTS_PATH}"
   else
     echo 'The installation of fonts was skipped.'
   fi
