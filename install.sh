@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -Ceuxo pipefail
 
 download() {
@@ -35,7 +36,7 @@ install_fonts() {
   if [ "${YN}" = 'y' ]; then
     local USER_FONTS_PATH="${USER_PROFILE_PATH}/AppData/Local/Microsoft/Windows/Fonts"
     echo "Installing fonts to '${USER_FONTS_PATH}'..."
-    rsync -hv --include "*/" --include "*.ttf" --exclude "*" "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" "${USER_FONTS_PATH}"
+    rsync -hv --include '*/' --include '*.ttf' --exclude '*' "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" "${USER_FONTS_PATH}"
   else
     echo 'The installation of fonts was skipped.'
   fi
@@ -45,7 +46,7 @@ main() {
   local WT_SETTINGS_PATH="$(realpath "${1:-"${HOME}/wt-settings"}")"
   local WT_SETTINGS_FONTS_PATH="${WT_SETTINGS_PATH}/AppData/Local/Microsoft/Windows/Fonts"
 
-  local WIN_USER_PROFILE_PATH="$(cmd.exe /c "<nul set /p=%UserProfile%" 2>/dev/null)"
+  local WIN_USER_PROFILE_PATH="$(cmd.exe /c '<nul set /p=%UserProfile%' 2>/dev/null)"
   local WIN_USER_PROFILE_DRIVE="${WIN_USER_PROFILE_PATH%%:*}:"
   local USER_PROFILE_MOUNT_PATH="$(findmnt --noheadings --first-only --output TARGET "${WIN_USER_PROFILE_DRIVE}\\")"
   local WIN_USER_PROFILE_PATH_WITHOUT_DRIVE="${WIN_USER_PROFILE_PATH#*:}"
@@ -57,4 +58,4 @@ main() {
   install_fonts
 }
 
-main $1
+main "$@"
