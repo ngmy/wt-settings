@@ -1,3 +1,6 @@
 [submodule "AppData/Local/Microsoft/Windows/Fonts/RictyDiminished"]
 	path = AppData/Local/Microsoft/Windows/Fonts/RictyDiminished
 	url = https://github.com/edihbrandon/RictyDiminished.git
+[submodule "AppData/Local/Microsoft/Windows/Fonts/HackGen"]
+	path = AppData/Local/Microsoft/Windows/Fonts/HackGen
+	url = https://github.com/yuru7/HackGen.git
