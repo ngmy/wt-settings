@@ -29,8 +29,7 @@
         {
             // Put settings here that you want to apply to all profiles.
             "colorScheme": "Iceberg",
-            "fontFace": "Ricty Diminished",
-            "fontSize": 14
+            "fontSize": 13
         },
         "list":
         [
