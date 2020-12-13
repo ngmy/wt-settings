@@ -34,12 +34,9 @@ install_fonts() {
   local YN
   read -p 'Do you want to install fonts? (y/N)' YN
   if [ "${YN}" = 'y' ]; then
-    local USER_FONTS_PATH="${USER_PROFILE_PATH}/AppData/Local/Microsoft/Windows/Fonts"
-    echo "Installing fonts to '${USER_FONTS_PATH}'..."
-    rsync -hrv --include '*/' --include '*.ttf' --exclude '*' \
-      "${WT_SETTINGS_FONTS_PATH}/HackGen/build/" \
-      "${WT_SETTINGS_FONTS_PATH}/RictyDiminished/" \
-      "${USER_FONTS_PATH}"
+    powershell.exe -ExecutionPolicy unrestricted ./Install-Fonts.ps1 \
+      HackGen*, \
+      RictyDiminished*
   else
     echo 'The installation of fonts was skipped.'
   fi
