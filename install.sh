@@ -3,37 +3,37 @@
 set -Ceuxo pipefail
 
 download() {
-  if [ -d "${WT_SETTINGS_PATH}" ]; then
-    echo "ngmy/wt-settings already exists in '${WT_SETTINGS_PATH}'."
-    local YN
-    read -p 'Do you want to re-download ngmy/wt-settings and continue the installation? (y/N)' YN
-    if [ "${YN}" != 'y' ]; then
+  if [ -d "${wt_settings_path}" ]; then
+    echo "ngmy/wt-settings already exists in '${wt_settings_path}'."
+    local yn
+    read -p 'Do you want to re-download ngmy/wt-settings and continue the installation? (y/N)' yn
+    if [ "${yn}" != 'y' ]; then
       echo 'The installation was canceled.'
       exit 1
     fi
-    echo "Downloading ngmy/wt-settings to '${WT_SETTINGS_PATH}'..."
-    git -C "${WT_SETTINGS_PATH}" pull origin master
+    echo "Downloading ngmy/wt-settings to '${wt_settings_path}'..."
+    git -C "${wt_settings_path}" pull origin master
   else
-    echo "Downloading ngmy/wt-settings to '${WT_SETTINGS_PATH}'..."
-    git clone https://github.com/ngmy/wt-settings.git "${WT_SETTINGS_PATH}"
+    echo "Downloading ngmy/wt-settings to '${wt_settings_path}'..."
+    git clone https://github.com/ngmy/wt-settings.git "${wt_settings_path}"
   fi
-  echo "Downloading fonts to '${WT_SETTINGS_FONTS_PATH}'..."
-  git -C "${WT_SETTINGS_PATH}" submodule update --init
+  echo "Downloading fonts to '${wt_settings_fonts_path}'..."
+  git -C "${wt_settings_path}" submodule update --init
 }
 
 backup() {
-  local BACKUP_DATE="$(date +%Y%m%d_%H%M%S)"
-  mv -v "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json.${BACKUP_DATE}"
+  local -r backup_date="$(date +%Y%m%d_%H%M%S)"
+  mv -v "${user_profile_path}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${user_profile_path}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json.${backup_date}"
 }
 
 install() {
-  rsync -hv "${WT_SETTINGS_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${USER_PROFILE_PATH}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
+  rsync -hv "${wt_settings_path}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json" "${user_profile_path}/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState"
 }
 
 install_fonts() {
-  local YN
-  read -p 'Do you want to install fonts? (y/N)' YN
-  if [ "${YN}" = 'y' ]; then
+  local yn
+  read -p 'Do you want to install fonts? (y/N)' yn
+  if [ "${yn}" = 'y' ]; then
     powershell.exe -ExecutionPolicy unrestricted ./Install-Fonts.ps1 \
       HackGen*, \
       RictyDiminished*
@@ -43,14 +43,14 @@ install_fonts() {
 }
 
 main() {
-  local WT_SETTINGS_PATH="$(realpath "${1:-"${HOME}/wt-settings"}")"
-  local WT_SETTINGS_FONTS_PATH="${WT_SETTINGS_PATH}/AppData/Local/Microsoft/Windows/Fonts"
+  local -r wt_settings_path="$(realpath "${1:-"${HOME}/wt-settings"}")"
+  local -r wt_settings_fonts_path="${wt_settings_path}/AppData/Local/Microsoft/Windows/Fonts"
 
-  local WIN_USER_PROFILE_PATH="$(cmd.exe /c '<nul set /p=%UserProfile%' 2>/dev/null)"
-  local WIN_USER_PROFILE_DRIVE="${WIN_USER_PROFILE_PATH%%:*}:"
-  local USER_PROFILE_MOUNT_PATH="$(findmnt --noheadings --first-only --output TARGET "${WIN_USER_PROFILE_DRIVE}\\")"
-  local WIN_USER_PROFILE_PATH_WITHOUT_DRIVE="${WIN_USER_PROFILE_PATH#*:}"
-  local USER_PROFILE_PATH="${USER_PROFILE_MOUNT_PATH}${WIN_USER_PROFILE_PATH_WITHOUT_DRIVE//\\//}"
+  local -r win_user_profile_path="$(cmd.exe /c '<nul set /p=%UserProfile%' 2>/dev/null)"
+  local -r win_user_profile_drive="${win_user_profile_path%%:*}:"
+  local -r user_profile_mount_path="$(findmnt --noheadings --first-only --output TARGET "${win_user_profile_drive}\\")"
+  local -r win_user_profile_path_without_drive="${win_user_profile_path#*:}"
+  local -r user_profile_path="${user_profile_mount_path}${win_user_profile_path_without_drive//\\//}"
 
   download
   backup
